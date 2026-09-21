@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --stage-padding: clamp(1.25rem, 5vw, 3rem);
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-ink-950 text-paper font-sans antialiased;
+    /* Three-layer wash: the brief's #08090D / #0D0F14 / #111318 as depth, not decoration. */
+    background-image:
+      radial-gradient(120% 80% at 50% -10%, #111318 0%, rgba(17, 19, 24, 0) 55%),
+      radial-gradient(80% 60% at 100% 100%, #0D0F14 0%, rgba(13, 15, 20, 0) 60%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: rgba(176, 164, 218, 0.28);
+    color: #f5f5f5;
+  }
+
+  :focus-visible {
+    outline: 1px solid rgba(176, 164, 218, 0.9);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Instrument Serif has no bold cut; keep headings from synthesising one. */
+  h1,
+  h2,
+  h3 {
+    font-weight: 400;
+  }
+}
+
+@layer components {
+  .stage {
+    min-height: 100svh;
+    padding: var(--stage-padding);
+    padding-top: clamp(4.5rem, 12vh, 7rem);
+    padding-bottom: clamp(5.5rem, 14vh, 8rem);
+  }
+
+  .hairline {
+    @apply border-white/[0.07];
+  }
+
+  .card-surface {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0.012) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Paper grain. One fixed layer, very low opacity, never interactive. */
+.grain {
+  position: fixed;
+  inset: -100%;
+  width: 300%;
+  height: 300%;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain-shift 7s steps(6) infinite;
+}
+
+@keyframes grain-shift {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-2%, -2%); }
+  80% { transform: translate(3%, 1%); }
+  100% { transform: translate(0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Motes in the background wash. */
+@keyframes mote-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.12;
+  }
+  50% {
+    transform: translate3d(12px, -26px, 0);
+    opacity: 0.45;
+  }
+}
